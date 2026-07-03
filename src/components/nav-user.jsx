@@ -16,8 +16,34 @@ import {
     useSidebar
 } from "@/components/ui/sidebar"
 
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { authClient } from "@/lib/auth-client"
+
 export function NavUser({ user }) {
     const { isMobile } = useSidebar()
+    const router = useRouter()
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+    async function handleLogout() {
+        if (isLoggingOut) return
+
+        setIsLoggingOut(true)
+
+        const { error } = await authClient.signOut()
+
+        setIsLoggingOut(false)
+
+        if (error) {
+            console.error("Erro ao deslogar: ", error)
+            return
+        }
+
+        router.push("/")
+        router.refresh()
+    }
+
+    const initials = user.name?.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase() ?? "US"
 
     return (
         <SidebarMenu>
@@ -30,7 +56,7 @@ export function NavUser({ user }) {
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback className="rounded-lg">AN</AvatarFallback>
+                                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">{user.name}</span>
@@ -45,7 +71,7 @@ export function NavUser({ user }) {
                         align="end"
                         sideOffset={4}
                     >
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onSelect={handleLogout}>
                             <LogOut />
                             Sair
                         </DropdownMenuItem>

@@ -10,13 +10,14 @@ export function TopbarMenu() {
                 </h1>
             </Link>
             <nav className="flex justify-between items-center w-full">
-                <div className="flex gap-6 text-sm">
-                    <Link href="/plans">Planos</Link>
-                    <Link href="/resources">Recursos</Link>
-                </div>
+                <div />
                 <div className="flex gap-7.5">
-                    <Button variant="outline">Login</Button>
-                    <Button>Cadastre-se</Button>
+                    <Button variant="outline" asChild>
+                        <Link href="/login">Login</Link>
+                    </Button>
+                    <Button asChild>
+                        <Link href="/register">Registre-se</Link>
+                    </Button>
                 </div>
             </nav>
         </header>
